@@ -131,15 +131,16 @@ impl ThinPoolDev {
                  meta: LinearDev,
                  data: LinearDev)
                  -> DmResult<ThinPoolDev> {
+        debug!("run thin check: {:?}", meta.devnode());
         if !try!(Command::new("thin_check")
-                     .arg("-q")
                      .arg(&try!(meta.devnode()))
                      .status())
                     .success() {
+            debug!("thin check failed");
             return Err(DmError::Dm(ErrorEnum::CheckFailed(meta, data),
                                    "thin_check failed, run thin_repair".into()));
         }
-
+        debug!("return thinpool");
         ThinPoolDev::new(name,
                          dm,
                          length,
